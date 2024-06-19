@@ -27,10 +27,10 @@ When planning your project, break down your project into smaller tasks, knowing 
 
 Here are a few examples to get you started with. During the proposal stage, you just need to create the tasks. Description and details can be edited at a later time. In addition, more tasks can be added in at a later time.
 
-| Task Name                   | Description                                                                                                   | Example                                                           |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Design Database schema      | Determine the models and database schema required for your project.                                           | [Link](https://github.com/hatchways/sb-capstone-example/issues/1) |
-| Source Your Data            | Determine where your data will come from. You may choose to use an existing API or create your own.           | [Link](https://github.com/hatchways/sb-capstone-example/issues/2) |
+| Task Name                   | Description                                                                                                   | Example                                                           | Actual |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------- |
+| Design Database schema      | Determine the models and database schema required for your project.                                           | [Link](https://github.com/hatchways/sb-capstone-example/issues/1) | [Schema Link](https://github.com/hatchways-community/capstone-project-one-5993b180a4cf40889048119ea899b4d7/blob/dev/Database%20Schema.drawio.png)
+| Source Your Data            | Determine where your data will come from. You may choose to use an existing API or create your own.           | [Link](https://github.com/hatchways/sb-capstone-example/issues/2) | [Api Link](https://developer.edamam.com/edamam-recipe-api)
 | User Flows                  | Determine user flow(s) - think about what you want a user’s experience to be like as they navigate your site. | [Link](https://github.com/hatchways/sb-capstone-example/issues/3) |
 | Set up backend and database | Configure the environmental variables on your framework of choice for development and set up database.        | [Link](https://github.com/hatchways/sb-capstone-example/issues/4) |
 | Set up frontend             | Set up frontend framework of choice and link it to the backend with a simple API call for example.            | [Link](https://github.com/hatchways/sb-capstone-example/issues/5) |
