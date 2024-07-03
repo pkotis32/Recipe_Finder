@@ -1,0 +1,9 @@
+Flask
+Flask-DebugToolbar
+Flask-SQLAlchemy
+Flask-WTF
+psycopg2-binary
+SQLAlchemy
+WTForms
+Flask-Bcrypt
+email-validator
