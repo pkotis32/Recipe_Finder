@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, session, redirect, flash, g
+from flask import Flask, render_template, request, session, redirect, flash, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Ingredient
 from forms import Register, Login
 import pdb
 
@@ -15,6 +15,42 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
+
+
+def read_ingredients():
+    """ read ingredients from file """
+
+    file_path = 'top_1000_ingredients.txt'
+
+    ingredients = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            ingredient = line.strip()
+            ingredients.append(ingredient)
+
+    return ingredients
+
+
+
+def save_ingredients_to_database(ingredients):
+    """ save the ingredients to the database """
+    
+    unique_ingredients = set(ingredients)
+    
+    # delete any existing ingredients if there are any
+    db.session.query(Ingredient).delete()
+    db.session.commit()
+
+    for ingredient in unique_ingredients:
+        ingredient = Ingredient(name = ingredient)
+        db.session.add(ingredient)
+
+    db.session.commit()
+
+    return jsonify({'message': 'ingredients saved successfully'})
+
+    
+
 
 
 @app.before_request
@@ -96,3 +132,25 @@ def logout():
 
 
     return redirect('/')
+
+
+@app.route('/get_ingredients')
+def get_ingredients():
+    """ return list of ingredients """
+
+    ingredients = set(read_ingredients())
+
+    return jsonify({'ingredients': list(ingredients)})
+
+
+@app.route('/save_ingredients', methods=['post'])
+def save_ingredients():
+    """ save ingredients to database """
+
+    ingredients = read_ingredients()
+
+    return save_ingredients_to_database(ingredients)
+
+
+
+
