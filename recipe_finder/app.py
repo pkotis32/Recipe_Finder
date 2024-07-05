@@ -138,7 +138,10 @@ def logout():
 def get_ingredients():
     """ return list of ingredients """
 
-    ingredients = set(read_ingredients())
+    ingredients = read_ingredients()
+    ingredients = [ingredient.lower() for ingredient in ingredients]
+    ingredients = set(ingredients)
+
 
     return jsonify({'ingredients': list(ingredients)})
 
@@ -148,6 +151,7 @@ def save_ingredients():
     """ save ingredients to database """
 
     ingredients = read_ingredients()
+    ingredients = [ingredient.lower() for ingredient in ingredients]
 
     return save_ingredients_to_database(ingredients)
 
