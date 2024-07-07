@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, session, redirect, flash, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Ingredient
+from models import db, connect_db, User, Recipe, Ingredient_Line, Ingredient, Ingredient_Info, Recipe_Ingredient, User_Favorite
 from forms import Register, Login
-from api_models import Recipe
+from api_models import RecipeClass
 from config import application_id, application_key
 import requests
 import json
@@ -56,7 +56,54 @@ def save_ingredients_to_database(ingredients):
 
     return jsonify({'message': 'ingredients saved successfully'})
 
+
+def save_recipe_info_to_database(recipes):
+    """ save all recipe information to the database """
     
+    for recipe in recipes:
+        title = recipe.title
+        source = recipe.source
+        image = recipe.image
+        url = recipe.url
+        ingredient_lines = recipe.ingredient_lines
+        calories = recipe.calories
+        total_time = recipe.total_time
+        cuisine_type = recipe.cuisine_type
+        meal_type = recipe.meal_type
+
+        database_recipe = Recipe(title=title, source=source, image=image, url=url, calories=calories, total_time=total_time, cuisine_type=cuisine_type, meal_type=meal_type)
+
+        db.session.add(database_recipe)
+        db.session.commit()
+    
+        recipe_id = database_recipe.id
+
+        for ingredient_line in ingredient_lines:
+            line = Ingredient_Line(line=ingredient_line, recipe_id = recipe_id)
+            db.session.add(line)
+            db.session.commit()
+
+        for ingredient in recipe.ingredients:
+            name = ingredient['food']
+            database_ingredient = Ingredient(name = name)
+            db.session.add(database_ingredient)
+            db.session.commit()
+
+            ingredient_id = database_ingredient.id
+            quantity = ingredient['quantity']
+            measure = ingredient['measure']
+            weight = ingredient['weight']
+            food_category = ingredient['foodCategory']
+            image = ingredient['image']
+
+            ingredient_info = Ingredient_Info(quantity=quantity, measure=measure, weight=weight, food_category=food_category, image=image, ingredient_id=ingredient_id)
+            db.session.add(ingredient_info)
+            db.session.commit()
+
+            recipe_ingredient = Recipe_Ingredient(recipe_id=recipe_id, ingredient_id=ingredient_id)
+            db.session.add(recipe_ingredient)
+            db.session.commit()
+
 
 
 
@@ -73,7 +120,7 @@ def add_user_to_global():
 @app.route('/')
 def show_home():
 
-    return render_template('base.html', BASE_URL=BASE_URL)
+    return render_template('home.html')
 
 @app.route('/register', methods=['get', 'post'])
 def register():
@@ -180,16 +227,18 @@ def get_recipes():
     }
 
     try:
-        print('hello')
         response = requests.get(BASE_URL, params=params, headers=headers)
         response = response.json()
     
-        recipes = Recipe.extract_from_json(response)
-        pdb.set_trace()
+        recipes = RecipeClass.extract_from_json(response)
+
+        save_recipe_info_to_database(recipes)
+
+
     except Exception as e:
         print(f'An error occurred, {e}')
 
-    return redirect('/')
+    return render_template('recipe_list.html', recipes = recipes)
 
 
 

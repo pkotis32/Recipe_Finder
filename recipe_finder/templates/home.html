@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{%block Header%}Home{%endblock%}
+
+
+{% block content %}
+
+{% if session['curr_user'] %}
+<div class="container mt-5 search-container" >
+    <div class="form-group d-flex justify-content-center position-relative">
+        <input type="text" class="form-control w-50 search" placeholder="Search for...">
+        <div class="dropdown-menu form-control w-50 mt-5" id="dropdown"></div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div>
+    <label for="selected">Selected Ingredients</label>
+    <ul id="selected" class="list-group">
+
+    </ul>
+    </div>
+</div>
+
+<div>
+    <a href="/api/recipes" class="btn btn-info">Recipes</a>
+</div>
+{% endif %}
+
+
+
+{% endblock %}

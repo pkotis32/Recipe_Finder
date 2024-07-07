@@ -2,3 +2,19 @@
 
 {%block Header%}Recipes{%endblock%}
 
+{%block content%}
+
+<div class="container">
+    <div class="container recipes">
+        <h1 class="d-3 text-center">Recipes</h1>
+        <ul class="list-group">
+            {% for recipe in recipes %}
+            <li class="list-group-item"><a href="#">{{recipe.url}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+
+{%endblock%}
