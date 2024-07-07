@@ -2,6 +2,10 @@ from flask import Flask, render_template, request, session, redirect, flash, g, 
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Ingredient
 from forms import Register, Login
+from api_models import Recipe
+from config import application_id, application_key
+import requests
+import json
 import pdb
 
 app = Flask(__name__)
@@ -15,6 +19,9 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
+
+BASE_URL = 'https://api.edamam.com/api/recipes/v2'
+
 
 
 def read_ingredients():
@@ -65,7 +72,8 @@ def add_user_to_global():
 
 @app.route('/')
 def show_home():
-    return render_template('base.html')
+
+    return render_template('base.html', BASE_URL=BASE_URL)
 
 @app.route('/register', methods=['get', 'post'])
 def register():
@@ -154,6 +162,36 @@ def save_ingredients():
     ingredients = [ingredient.lower() for ingredient in ingredients]
 
     return save_ingredients_to_database(ingredients)
+
+
+@app.route('/api/recipes')
+def get_recipes():
+    """ get all relevant recipes """
+
+    params = {
+        'type': 'public',
+        'q': 'chicken',
+        'app_id': application_id,
+        'app_key': application_key
+    }
+
+    headers = {
+        'Accept': 'application/json'
+    }
+
+    try:
+        print('hello')
+        response = requests.get(BASE_URL, params=params, headers=headers)
+        response = response.json()
+    
+        recipes = Recipe.extract_from_json(response)
+        pdb.set_trace()
+    except Exception as e:
+        print(f'An error occurred, {e}')
+
+    return redirect('/')
+
+
 
 
 

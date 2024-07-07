@@ -1,5 +1,6 @@
 $(document).ready(function() {
     
+    // get list of ingredients and populate search bar
     $('.search').on('click', async function(event) {
         event.preventDefault()
         console.log('hello')
@@ -21,15 +22,15 @@ $(document).ready(function() {
         }
     })
 
+    // hide dropdown when click happens elsewhere
     $(document).on('click', function(event) {
         if (!$(event.target).closest('.search-container').length) {
-            console.log('hello')
             $('#dropdown').hide()
         }
     })
 
+    // obtain search query and pass into filterDropdown
     $('.search').on('input', function() {
-        console.log('change')
         const query = $(this).val().trim()
         if (query == '') {
             $('dropdown').hide()
@@ -40,23 +41,35 @@ $(document).ready(function() {
     })
 
 
+    // handle ingredient selection
+    $('#dropdown').on('click', '.dropdown-item', function() {
+        
+        $(this).toggleClass('bg-info')
+        const selectedIngredient = $(this).data('ingredient')
+        toggleIngredientSelection(selectedIngredient)
+    })
+
+
+
+    // extracts the ingredients array from the json response
     function extractJson(response) {
 
         ingredientArray = response.data.ingredients
         return ingredientArray
     }
 
-
+    // creates ingredient elements and populates the dropdown with them
     function populateSearchDropdown(ingredients){
         
         $('#dropdown').empty()
         ingredients = ingredients.ingredients.sort()
         for (const ingredient of ingredients) {
-            $('#dropdown').append(`<a class="dropdown-item" href="#">${ingredient}</a>`)
+            $('#dropdown').append(`<a class="dropdown-item" href="#" data-ingredient="${ingredient}">${ingredient}</a>`)
         }
         $('#dropdown').show()
     }
 
+    // filters the dropdown results based on user input
     function filterDropdown(query) {
         let hasVisibleItems = false
         $('#dropdown').find('.dropdown-item').each(function() {
@@ -74,12 +87,32 @@ $(document).ready(function() {
         if (hasVisibleItems == false) {
             $('#dropdown').hide()
         }
+        else {
+            $('#dropdown').show()
+        }
+    }
+
+
+    // toggle ingredient selection
+    function toggleIngredientSelection(ingredient) {
+        
+        something = $('#selected').find(`li[data-ingredient="${ingredient}"]`)
+        console.log(something)
+        let isSelected = $('#selected').find(`li[data-ingredient="${ingredient}"]`).length > 0
+
+        if (isSelected) {
+            $(`#selected li[data-ingredient="${ingredient}"]`).remove()
+        }
+        else {
+            $('#selected').append(`<li class="list-group-item" data-ingredient="${ingredient}">${ingredient}</li>`)
+        }
+
     }
 
 })
 
 
-
+// class to define each ingredient
 class Ingredients {
 
     constructor(ingredients) {
