@@ -21,7 +21,7 @@ class RecipeClass:
     def extract_from_json(response):
         """ extract recipe information from response and return the recipes, also save recipes to database """
         recipes = []
-        for hit in response['hits'][:3]:
+        for hit in response['hits']:
             recipe = hit['recipe']
 
             title = recipe['label']

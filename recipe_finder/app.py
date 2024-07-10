@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, flash, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Recipe, Ingredient_Line, Ingredient, Ingredient_Info, Recipe_Ingredient, User_Favorite
+from models import db, connect_db, User, Recipe, Ingredient, Ingredient_Info, Recipe_Ingredient, User_Favorite
 from forms import Register, Login
 from api_models import RecipeClass
 from config import application_id, application_key
@@ -71,38 +71,38 @@ def save_recipe_info_to_database(recipes):
         cuisine_type = recipe.cuisine_type
         meal_type = recipe.meal_type
 
-        database_recipe = Recipe(title=title, source=source, image=image, url=url, calories=calories, total_time=total_time, cuisine_type=cuisine_type, meal_type=meal_type)
 
-        db.session.add(database_recipe)
-        db.session.commit()
-    
-        recipe_id = database_recipe.id
+        recipe_exists = Recipe.query.filter_by(title=title, source=source).first()
 
-        for ingredient_line in ingredient_lines:
-            line = Ingredient_Line(line=ingredient_line, recipe_id = recipe_id)
-            db.session.add(line)
+        if recipe_exists is None:
+            database_recipe = Recipe(title=title, source=source, image=image, url=url, calories=calories, total_time=total_time, cuisine_type=cuisine_type, meal_type=meal_type)
+
+            db.session.add(database_recipe)
             db.session.commit()
+        
+            recipe_id = database_recipe.id
 
-        for ingredient in recipe.ingredients:
-            name = ingredient['food']
-            database_ingredient = Ingredient(name = name)
-            db.session.add(database_ingredient)
-            db.session.commit()
+            for ingredient in recipe.ingredients:
+                name = ingredient['food']
+                database_ingredient = Ingredient(name = name)
+                db.session.add(database_ingredient)
+                db.session.commit()
 
-            ingredient_id = database_ingredient.id
-            quantity = ingredient['quantity']
-            measure = ingredient['measure']
-            weight = ingredient['weight']
-            food_category = ingredient['foodCategory']
-            image = ingredient['image']
+                ingredient_id = database_ingredient.id
+                text = ingredient['text']
+                quantity = ingredient['quantity']
+                measure = ingredient['measure']
+                weight = ingredient['weight']
+                food_category = ingredient['foodCategory']
+                image = ingredient['image']
 
-            ingredient_info = Ingredient_Info(quantity=quantity, measure=measure, weight=weight, food_category=food_category, image=image, ingredient_id=ingredient_id)
-            db.session.add(ingredient_info)
-            db.session.commit()
+                ingredient_info = Ingredient_Info(text=text, quantity=quantity, measure=measure, weight=weight, food_category=food_category, image=image, ingredient_id=ingredient_id)
+                db.session.add(ingredient_info)
+                db.session.commit()
 
-            recipe_ingredient = Recipe_Ingredient(recipe_id=recipe_id, ingredient_id=ingredient_id)
-            db.session.add(recipe_ingredient)
-            db.session.commit()
+                recipe_ingredient = Recipe_Ingredient(recipe_id=recipe_id, ingredient_id=ingredient_id)
+                db.session.add(recipe_ingredient)
+                db.session.commit()
 
 
 
@@ -215,9 +215,18 @@ def save_ingredients():
 def get_recipes():
     """ get all relevant recipes """
 
+    print('hello')
+    if not g.user:
+        flash('Access unauthorized, please login/signup', 'danger')
+        return redirect('/')
+    
+    ingredients = request.args.getlist('ingredients')
+    query_string = ','.join(ingredients)
+
+
     params = {
         'type': 'public',
-        'q': 'chicken',
+        'q': query_string,
         'app_id': application_id,
         'app_key': application_key
     }
@@ -234,14 +243,95 @@ def get_recipes():
 
         save_recipe_info_to_database(recipes)
 
+        saved_recipes = []
+        user_id = g.user.id
+        for recipe in recipes:
+            recipe = Recipe.query.filter_by(url=recipe.url).first()
+            saved_recipes.append(recipe)
+
+        user_favorites = User_Favorite.query.filter_by(user_id=user_id).all()
+        favorite_recipe_ids = {favorite.recipe_id for favorite in user_favorites}
 
     except Exception as e:
         print(f'An error occurred, {e}')
 
-    return render_template('recipe_list.html', recipes = recipes)
+    return render_template('recipe_list.html', recipes=saved_recipes, favorite_recipe_ids=favorite_recipe_ids)
+
+
+@app.route('/api/recipes/<int:recipe_id>')
+def show_recipe(recipe_id):
+    """ show specific recipe info """
+
+    if not g.user:
+        flash('Access unauthorized, please login/signup', 'danger')
+
+    user_id = g.user.id
+    recipe = Recipe.query.get(recipe_id)
+    favorite = User_Favorite.query.filter_by(user_id=user_id, recipe_id=recipe_id).first()
+
+    return render_template('specific_recipe.html', recipe=recipe, favorite=favorite)
+
+
+
+@app.route('/api/recipes/<int:recipe_id>/ingredients')
+def show_recipe_ingredients(recipe_id):
+    """ show recipe ingredients """
+
+    if not g.user:
+        flash('Access unauthorized, please login/signup', 'danger')
+
+    recipe = Recipe.query.get(recipe_id)
+
+    return render_template('recipe_ingredients.html', recipe = recipe)
+
+
+
+@app.route('/api/favorites/<int:recipe_id>/add', methods=['post'])
+def add_favorite(recipe_id):
+    """ add favorite to database """
+    
+    if not g.user:
+        flash('Access unauthorized, please login/signup', 'danger')
+    
+    user_id = g.user.id
+
+    user_favorite = User_Favorite(user_id=user_id, recipe_id=recipe_id)
+    db.session.add(user_favorite)
+    db.session.commit()
+
+    return jsonify({'message': 'Added recipe to favorites'})
+
+
+@app.route('/api/favorites/<int:recipe_id>/delete', methods=['post'])
+def delete_favorite(recipe_id):
+    """ remove favorite from the database """
+
+    if not g.user:
+        flash('Access unauthorized, please login/signup', 'danger')
+
+    user_id = g.user.id
+
+    user_favorite = User_Favorite.query.filter_by(user_id=user_id, recipe_id=recipe_id).first()
+
+    db.session.delete(user_favorite)
+    db.session.commit()
+
+    return jsonify({'message': 'Removed recipe from favorites'})
 
 
 
 
+@app.route('/api/favorites')
+def show_favorites():
+    """ show list of favorite recipes """
 
+    if not g.user:
+        flash('Access unauthorized, please login/signup', 'danger')
 
+    user = g.user
+
+    favorites = user.favorites
+        
+    favorite_recipe_ids = {favorite.id for favorite in favorites}
+
+    return render_template('favorites_list.html', favorites=favorites, favorite_recipe_ids=favorite_recipe_ids)

@@ -50,6 +50,54 @@ $(document).ready(function() {
     })
 
 
+    $('.favorite').on('click', async function() {
+
+        const isFavorite = $(this).hasClass('fas')
+        const recipe_id = $(this).data('recipe-id')
+        console.log(isFavorite)
+        console.log(recipe_id)
+        console.log('hello')
+        console.log(isFavorite)
+        $(this).toggleClass('fas far')
+
+        if (!isFavorite) {
+            try{
+                const resp = await axios.post(`/api/favorites/${recipe_id}/add`) 
+                console.log(resp.data)        
+            } catch(e) {
+                console.log('Error', e)
+            }
+        }
+        else {
+            try {
+                const resp = await axios.post(`/api/favorites/${recipe_id}/delete`)
+                console.log(resp.data)
+            } catch(e) {
+                console.log('Error', e)
+            }
+        }
+        
+    })
+
+
+    $('.search_recipes').on('click', async function() {
+
+    
+        let ingredients = []
+
+        $('#selected > li').each(function() {
+            ingredients.push($(this).text().trim())
+        })
+
+        let baseUrl = '/api/recipes'; 
+        let queryParams = ingredients.map(ingredient => `ingredients=${encodeURIComponent(ingredient)}`).join('&')
+        let redirectUrl = `${baseUrl}?${queryParams}`
+
+        window.location.href = redirectUrl;
+
+    })
+
+
 
     // extracts the ingredients array from the json response
     function extractJson(response) {

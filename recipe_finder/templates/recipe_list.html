@@ -4,17 +4,21 @@
 
 {%block content%}
 
-<div class="container">
-    <div class="container recipes">
-        <h1 class="d-3 text-center">Recipes</h1>
-        <ul class="list-group">
-            {% for recipe in recipes %}
-            <li class="list-group-item"><a href="#">{{recipe.url}}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-
+<div class="container recipes">
+    <h1 class="d-3 text-center">Recipes</h1>
+    <ul class="list-group recipe_list">
+        {% for recipe in recipes %}
+        <li class="list-group-item"><a href="/api/recipes/{{recipe.id}}">{{recipe.title}}</a>
+            {% set is_favorite = recipe.id in favorite_recipe_ids%}
+            {% if is_favorite %}
+                <i class="fas fa-star favorite" data-recipe-id="{{recipe.id}}"></i></li>
+            {% else %}
+                <i class="far fa-star favorite" data-recipe-id="{{recipe.id}}"></i></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
 </div>
+
 
 
 {%endblock%}

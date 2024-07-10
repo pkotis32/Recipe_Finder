@@ -6,3 +6,13 @@ div#dropdown {
     max-height: 300px;
     overflow-y: auto;
 }
+
+.recipe_header {
+    height: 40vh;
+}
+
+
+.recipe_list {
+    max-height: 75vh;
+    overflow-y: auto;
+}

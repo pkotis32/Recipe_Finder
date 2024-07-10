@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{%block Header%}Recipes{%endblock%}
+
+{%block content%}
+
+<div class="container favorites">
+    <h1 class="text-center">Favorites</h1>
+    <ul class="list-group mt-3">
+        {% for favorite in favorites %}
+            {% set is_favorite = favorite.id in favorite_recipe_ids%}
+            {% if is_favorite %}
+            <li class="list-group-item"><a href="/api/recipes/{{favorite.id}}">{{favorite.title}}</a>
+                <i class="fas fa-star favorite" data-recipe-id="{{favorite.id}}"></i></li>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+{% endblock %}

@@ -62,7 +62,6 @@ class Recipe(db.Model):
     source = db.Column(db.String, nullable=False)
     image = db.Column(db.String)
     url = db.Column(db.String, nullable=False)
-    ingredient_lines = db.relationship('Ingredient_Line', backref='recipe')
     calories = db.Column(db.Float)
     total_time = db.Column(db.Float)
     cuisine_type = db.Column(db.String)
@@ -70,18 +69,10 @@ class Recipe(db.Model):
 
     ingredients = db.relationship('Ingredient', secondary='recipe_ingredient', backref='recipe')
 
+    def __repr__(self):
+        return f"<id={self.id} title={self.title} source={self.source} image={self.image} url={self.url} calories={self.calories} total_time={self.total_time} cuisine_type={self.cuisine_type} meal_type={self.meal_type}>"
 
 
-class Ingredient_Line(db.Model):
-
-    __tablename__ = 'ingredient_lines'
-
-    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    line = db.Column(db.String, nullable = False)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id', ondelete='cascade'), nullable=False)
-
-
-    
 
 class Ingredient(db.Model):
 
@@ -103,9 +94,10 @@ class Ingredient_Info(db.Model):
     __tablename__ = 'ingredient_info'
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    quantity = db.Column(db.Float, nullable = False)
-    measure = db.Column(db.String, nullable = False)
-    weight = db.Column(db.Float, nullable = False)
+    text = db.Column(db.String, nullable=False)
+    quantity = db.Column(db.Float)
+    measure = db.Column(db.String)
+    weight = db.Column(db.Float)
     food_category = db.Column(db.String)
     image = db.Column(db.String)
     ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id', ondelete='cascade'), nullable = False)
@@ -149,4 +141,4 @@ class User_Favorite(db.Model):
 
 
     def __repr__(self):
-        return f'<id={self.id} title={self.title} description={self.description} instruction={self.instruction} user_id={self.user_id}>'
+        return f'<id={self.id} user_id={self.user_id} recipe_id={self.recipe_id}>'

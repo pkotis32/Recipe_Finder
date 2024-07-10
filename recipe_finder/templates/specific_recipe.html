@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{%block Header%}Recipes{%endblock%}
+
+{%block content%}
+
+<div class="recipe_header">
+    <div class="container recipe h-25">
+        <h1 class="d-3 text-center">{{recipe.title}}
+        {% if favorite %}
+        <i class="fas fa-star favorite" data-recipe-id="{{recipe.id}}"></i></h1>
+        {% else %}
+        <i class="far fa-star favorite" data-recipe-id="{{recipe.id}}"></i></h1>
+        {% endif %}
+    </div>
+    <div class="container image d-flex justify-content-center h-75">
+        <img class="img-thumbnail img-fluid" src="{{recipe.image}}" alt="recipe_image">
+    </div>
+</div>
+
+<div class="recipe_info container d-flex flex-column mt-3">
+    <ul class="list-group">
+        <li class="list-group-item align-self-center"><a href="{{recipe.url}}" target="_blank">Link to recipe</a></li>
+        <li class="list-group-item align-self-center border-0"><a class="btn btn-info" href="/api/recipes/{{recipe.id}}/ingredients">Ingredients</a></li>
+        <li class="list-group-item border-top mt-2">Total time: {{recipe.total_time}} min</li>
+        <li class="list-group-item">Calories: {{recipe.calories | round}}</li>
+        <li class="list-group-item">Cuisine type: {{recipe.cuisine_type}}</li>
+        <li class="list-group-item">Meal type: {{recipe.meal_type}}</li>
+
+    </ul>
+
+</div>
+
+
+{%endblock%}
