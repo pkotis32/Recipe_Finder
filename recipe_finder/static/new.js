@@ -3,7 +3,6 @@ $(document).ready(function() {
     // get list of ingredients and populate search bar
     $('.search').on('click', async function(event) {
         event.preventDefault()
-        console.log('hello')
        
         try {
             const[resp1, resp2] = await Promise.all([
@@ -11,9 +10,6 @@ $(document).ready(function() {
                 axios.post('/save_ingredients')])
                 
             ingredients = new Ingredients(extractJson(resp1))
-
-            console.log('resp from getting ingredients', resp1)
-            console.log('resp from saving ingredients', resp2)
 
             populateSearchDropdown(ingredients)
             
@@ -31,12 +27,23 @@ $(document).ready(function() {
 
     // obtain search query and pass into filterDropdown
     $('.search').on('input', function() {
+
         const query = $(this).val().trim()
         if (query == '') {
             $('dropdown').hide()
         }
         else {
             filterDropdown(query)
+        }
+    })
+
+
+    $('.search').on('keydown', function(event) {
+        if (event.key == 'Enter') {
+            console.log('hello')
+            ingredient = $(this).val().trim()
+            $('#selected').append(`<li class="list-group-item" data-ingredient="${ingredient}">${ingredient}</li>`)
+            $('.search').val('')
         }
     })
 
@@ -78,6 +85,7 @@ $(document).ready(function() {
         }
         
     })
+
 
 
     $('.search_recipes').on('click', async function() {

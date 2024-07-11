@@ -22,8 +22,12 @@
     <ul class="list-group">
         <li class="list-group-item align-self-center"><a href="{{recipe.url}}" target="_blank">Link to recipe</a></li>
         <li class="list-group-item align-self-center border-0"><a class="btn btn-info" href="/api/recipes/{{recipe.id}}/ingredients">Ingredients</a></li>
+        <li class="list-group-item align-self-center border-0"><a class="btn btn-primary" href="/api/recipes/{{recipe.id}}/nutrition_facts">Nutrition Facts</a></li>
+        {% if recipe.total_time != 0.0%}
         <li class="list-group-item border-top mt-2">Total time: {{recipe.total_time}} min</li>
-        <li class="list-group-item">Calories: {{recipe.calories | round}}</li>
+        {% endif %}
+        <li class="list-group-item border-top ">Calories: {{recipe.calories | round}} kcal</li>
+        <li class="list-group-item">Serves: {{recipe.serves}} people</li>
         <li class="list-group-item">Cuisine type: {{recipe.cuisine_type}}</li>
         <li class="list-group-item">Meal type: {{recipe.meal_type}}</li>
 

@@ -16,3 +16,15 @@ div#dropdown {
     max-height: 75vh;
     overflow-y: auto;
 }
+
+#selected {
+    width: 25%;
+}
+
+button {
+    width: 90px;
+}
+
+.favorite {
+    cursor: pointer; 
+}

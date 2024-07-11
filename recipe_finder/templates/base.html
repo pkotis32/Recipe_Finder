@@ -11,10 +11,10 @@
 <body>
 
   <nav class="navbar bg-body-tertiary">
-    <div class="container-fluid"> 
+    <div class="container-fluid">
+      {% if session['curr_user'] %} 
       <div class="d-flex justify-content-between">
         <a class="navbar-brand ms-5" href="/">Home</a>
-        {% if session['curr_user'] %} 
         <ul class="nav"> 
           <li class="nav-item">
             <a class="nav-link" href="/api/favorites">Favorites</a>
@@ -30,7 +30,8 @@
         </li>
         
       {% else %}
-      <ul class="nav justify-content-end me-5">
+      <a class="navbar-brand ms-5" href="/">Home</a>
+      <ul class="nav me-5">
         <li class="nav-item">
           <a class="nav-link" href="/login">Login</a>
         </li>
@@ -38,6 +39,7 @@
           <a class="nav-link" href="/register">Register</a>
         </li>
       </ul>
+
       {% endif %}
     </div>
   </nav>
@@ -62,3 +64,6 @@
   <script src="/static/new.js"></script>
 </body>
 </html>
+
+
+

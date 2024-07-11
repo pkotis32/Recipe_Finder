@@ -8,3 +8,4 @@ WTForms
 Flask-Bcrypt
 email-validator
 requests
+gunicorn

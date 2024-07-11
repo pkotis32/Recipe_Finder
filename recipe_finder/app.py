@@ -1,16 +1,16 @@
 from flask import Flask, render_template, request, session, redirect, flash, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Recipe, Ingredient, Ingredient_Info, Recipe_Ingredient, User_Favorite
+from models import db, connect_db, User, Recipe, Ingredient, Ingredient_Info, Recipe_Ingredient, User_Favorite, Nutrition_Fact
 from forms import Register, Login
 from api_models import RecipeClass
-from config import application_id, application_key
+from config import application_id, application_key, supabase_database_uri
 import requests
 import json
 import pdb
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///capstone1"
+app.config["SQLALCHEMY_DATABASE_URI"] = supabase_database_uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "abc123"
@@ -21,6 +21,11 @@ toolbar = DebugToolbarExtension(app)
 connect_db(app)
 
 BASE_URL = 'https://api.edamam.com/api/recipes/v2'
+
+
+
+with app.app_context():
+    db.create_all() 
 
 
 
@@ -59,14 +64,15 @@ def save_ingredients_to_database(ingredients):
 
 def save_recipe_info_to_database(recipes):
     """ save all recipe information to the database """
-    
+
+
     for recipe in recipes:
         title = recipe.title
         source = recipe.source
         image = recipe.image
         url = recipe.url
-        ingredient_lines = recipe.ingredient_lines
         calories = recipe.calories
+        serves = recipe.serves
         total_time = recipe.total_time
         cuisine_type = recipe.cuisine_type
         meal_type = recipe.meal_type
@@ -75,7 +81,7 @@ def save_recipe_info_to_database(recipes):
         recipe_exists = Recipe.query.filter_by(title=title, source=source).first()
 
         if recipe_exists is None:
-            database_recipe = Recipe(title=title, source=source, image=image, url=url, calories=calories, total_time=total_time, cuisine_type=cuisine_type, meal_type=meal_type)
+            database_recipe = Recipe(title=title, source=source, image=image, url=url, calories=calories, serves=serves, total_time=total_time, cuisine_type=cuisine_type, meal_type=meal_type)
 
             db.session.add(database_recipe)
             db.session.commit()
@@ -103,6 +109,24 @@ def save_recipe_info_to_database(recipes):
                 recipe_ingredient = Recipe_Ingredient(recipe_id=recipe_id, ingredient_id=ingredient_id)
                 db.session.add(recipe_ingredient)
                 db.session.commit()
+
+                
+        
+
+            for key, nutrition_fact in recipe.nutrition_facts.items():
+
+                label = nutrition_fact['label']
+                quantity = nutrition_fact['quantity']
+                unit = nutrition_fact['unit']
+
+                new_nutrition_fact = Nutrition_Fact(label=label, quantity=quantity, unit=unit, recipe_id=recipe_id)
+                db.session.add(new_nutrition_fact)
+                db.session.commit()
+            
+            
+
+            
+
 
 
 
@@ -167,7 +191,7 @@ def login():
             session['curr_user'] = user.id
             flash('Successfully logged in', 'success')
         else:
-            flash('Please login/signup first', 'danger')
+            flash('Incorrect username/password, please signup if not done so already', 'danger')
 
         return redirect('/')
         
@@ -238,10 +262,13 @@ def get_recipes():
     try:
         response = requests.get(BASE_URL, params=params, headers=headers)
         response = response.json()
+
     
         recipes = RecipeClass.extract_from_json(response)
 
+
         save_recipe_info_to_database(recipes)
+
 
         saved_recipes = []
         user_id = g.user.id
@@ -294,10 +321,14 @@ def add_favorite(recipe_id):
         flash('Access unauthorized, please login/signup', 'danger')
     
     user_id = g.user.id
+    user = User.query.get(user_id)
 
-    user_favorite = User_Favorite(user_id=user_id, recipe_id=recipe_id)
-    db.session.add(user_favorite)
-    db.session.commit()
+    favorite_ids = [favorite.id for favorite in user.favorites]
+
+    if recipe_id not in favorite_ids:
+        user_favorite = User_Favorite(user_id=user_id, recipe_id=recipe_id)
+        db.session.add(user_favorite)
+        db.session.commit()
 
     return jsonify({'message': 'Added recipe to favorites'})
 
@@ -335,3 +366,19 @@ def show_favorites():
     favorite_recipe_ids = {favorite.id for favorite in favorites}
 
     return render_template('favorites_list.html', favorites=favorites, favorite_recipe_ids=favorite_recipe_ids)
+
+
+
+@app.route('/api/recipes/<int:recipe_id>/nutrition_facts')
+def show_recipe_nutrition_facts(recipe_id):
+    """ show nutrition facts for specific recipe """
+
+    if not g.user:
+        flash('Access unauthorized, please login/signup', 'danger')
+
+    recipe = Recipe.query.get(recipe_id)
+    nutrition_facts = recipe.nutrition_facts
+
+    return render_template('nutrition_facts.html', recipe=recipe, nutrition_facts=nutrition_facts)
+
+    

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{%block Header%}Nutrition Facts{%endblock%}
+
+{%block content%}
+
+
+<div class="container">
+    <h1>{{recipe.title}} Nutrition Facts</h1>
+
+    <ul>
+        {% for nutrition_fact in recipe.nutrition_facts%}
+        <li>{{nutrition_fact.label}} {{nutrition_fact.quantity | round}} {{nutrition_fact.unit}}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

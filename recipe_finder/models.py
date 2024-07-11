@@ -63,14 +63,29 @@ class Recipe(db.Model):
     image = db.Column(db.String)
     url = db.Column(db.String, nullable=False)
     calories = db.Column(db.Float)
+    serves = db.Column(db.Float)
     total_time = db.Column(db.Float)
     cuisine_type = db.Column(db.String)
     meal_type = db.Column(db.String)
 
     ingredients = db.relationship('Ingredient', secondary='recipe_ingredient', backref='recipe')
+    nutrition_facts = db.relationship('Nutrition_Fact', backref='recipe')
 
     def __repr__(self):
-        return f"<id={self.id} title={self.title} source={self.source} image={self.image} url={self.url} calories={self.calories} total_time={self.total_time} cuisine_type={self.cuisine_type} meal_type={self.meal_type}>"
+        return f"<id={self.id} title={self.title} source={self.source} image={self.image} url={self.url} calories={self.calories} serves={self.serves} total_time={self.total_time} cuisine_type={self.cuisine_type} meal_type={self.meal_type}>"
+    
+
+class Nutrition_Fact(db.Model):
+    __tablename__ = 'nutrition_facts'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    label = db.Column(db.String, nullable = False)
+    quantity = db.Column(db.Float, nullable = False)
+    unit = db.Column(db.String, nullable = False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id', ondelete='cascade'), nullable=False)
+
+    def __repr__(self):
+        return f'<id={self.id} label={self.label} quanitity={self.quantity} unit={self.unit} recipe_id={self.recipe_id}>'
 
 
 
