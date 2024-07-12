@@ -1,14 +1,20 @@
+import os
 from flask import Flask, render_template, request, session, redirect, flash, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Recipe, Ingredient, Ingredient_Info, Recipe_Ingredient, User_Favorite, Nutrition_Fact
 from forms import Register, Login
 from api_models import RecipeClass
-from config import application_id, application_key, supabase_database_uri
 import requests
 import json
 import pdb
 
 app = Flask(__name__)
+
+# retrieve environmental variables to make api request
+BASE_URL = 'https://api.edamam.com/api/recipes/v2'
+application_id = os.getenv('application.id')
+application_key = os.getenv('application_key')
+supabase_database_uri = os.getenv('supabase_database_uri')
 
 app.config["SQLALCHEMY_DATABASE_URI"] = supabase_database_uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -19,9 +25,6 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
-
-BASE_URL = 'https://api.edamam.com/api/recipes/v2'
-
 
 
 with app.app_context():

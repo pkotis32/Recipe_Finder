@@ -9,3 +9,4 @@ Flask-Bcrypt
 email-validator
 requests
 gunicorn
+python-dotenv
