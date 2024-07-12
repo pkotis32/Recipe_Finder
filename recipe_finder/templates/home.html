@@ -23,11 +23,17 @@
     </ul>
     </div>
 </div>
-
-
-
-
+{% else %}
+<div class="start_page d-flex align-items-center justify-content-end">
+    <div class="start_content d-flex flex-column align-items-center justify-content-center">
+        <h1 class="display-2">Recipe Finder</h1>
+        <a href="/register" class="get_started btn bg-success text-white mt-3">Get Started</a> 
+        <a href="/login" class="already_registered btn text-danger mt-2">Already Registered?</a>
+    </div>
+</div>
 {% endif %}
+
+
 
 
 

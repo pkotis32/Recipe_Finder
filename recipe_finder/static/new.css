@@ -28,3 +28,36 @@ button {
 .favorite {
     cursor: pointer; 
 }
+
+
+.start_page {
+    background-image: url('/static/recipe_background.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+
+
+nav {
+    background-color: rgb(167, 170, 171);
+}
+
+.start_content {
+    color: white;
+    height: 50%;
+    margin-right: 5%;
+    margin-bottom: 5%;
+}
+
+.already_registered {
+    background-color: rgb(172, 170, 168);
+}
+
+.already_registered:hover {
+    background-color: rgb(172, 170, 168);
+}
+
+
+body {
+    background-color: #e9f3fd !important;
+}
