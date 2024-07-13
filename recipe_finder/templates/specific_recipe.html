@@ -21,8 +21,8 @@
 <div class="recipe_info container d-flex flex-column mt-3">
     <ul class="list-group">
         <li class="list-group-item align-self-center"><a href="{{recipe.url}}" target="_blank">Link to recipe</a></li>
-        <li class="list-group-item align-self-center border-0"><a class="btn btn-info" href="/api/recipes/{{recipe.id}}/ingredients">Ingredients</a></li>
-        <li class="list-group-item align-self-center border-0"><a class="btn btn-primary" href="/api/recipes/{{recipe.id}}/nutrition_facts">Nutrition Facts</a></li>
+        <li class="list-group-item align-self-center border-0 mt-1" id="ingredients_button"><a class="btn btn-info" href="/api/recipes/{{recipe.id}}/ingredients">Ingredients</a></li>
+        <li class="list-group-item align-self-center border-0" id="nutrition_facts_button"><a class="btn btn-primary" href="/api/recipes/{{recipe.id}}/nutrition_facts">Nutrition Facts</a></li>
         {% if recipe.total_time != 0.0%}
         <li class="list-group-item border-top mt-2">Total time: {{recipe.total_time}} min</li>
         {% endif %}

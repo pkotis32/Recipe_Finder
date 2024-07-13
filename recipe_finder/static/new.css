@@ -61,3 +61,7 @@ nav {
 body {
     background-color: #e9f3fd !important;
 }
+
+#ingredients_button, #nutrition_facts_button {
+    background-color: #e9f3fd !important;;
+}
