@@ -1,5 +1,5 @@
 import pdb
-# class to save relevant recipe information from json respone
+# class to save relevant recipe information from json response
 class RecipeClass:
 
     def __init__(self, title=None, source=None, image=None, url=None, ingredients=None, nutrition_facts=None, calories=None, serves=None, total_time=None, cuisine_type=None, meal_type=None):
@@ -20,8 +20,7 @@ class RecipeClass:
 
     @staticmethod
     def extract_from_json(response):
-        """ extract recipe information from response and return the recipes, also save recipes to database """
-        
+        """ extract recipe information from response and return the recipe object list """
         
         recipes = []
         for hit in response['hits']:

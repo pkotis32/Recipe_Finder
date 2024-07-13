@@ -32,6 +32,7 @@ class User(db.Model):
 
     @classmethod
     def signup(cls, username, password, email, first_name, last_name):
+        # signup user
 
         hashed_password = bcrypt.generate_password_hash(password).decode('UTF-8')
 
@@ -44,6 +45,7 @@ class User(db.Model):
 
     @classmethod
     def authenticate(cls, username, password):
+        # login user
 
         user = User.query.filter(User.username == username).first()
 

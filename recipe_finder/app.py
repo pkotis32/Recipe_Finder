@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 # retrieve environmental variables to make api request
 BASE_URL = 'https://api.edamam.com/api/recipes/v2'
-application_id = os.getenv('application.id')
+application_id = os.getenv('application_id')
 application_key = os.getenv('application_key')
 supabase_database_uri = os.getenv('supabase_database_uri')
 
@@ -27,6 +27,7 @@ toolbar = DebugToolbarExtension(app)
 connect_db(app)
 
 
+# set up all database tables
 with app.app_context():
     db.create_all() 
 
@@ -69,6 +70,7 @@ def save_recipe_info_to_database(recipes):
     """ save all recipe information to the database """
 
 
+    # extract recipe info and save to database
     for recipe in recipes:
         title = recipe.title
         source = recipe.source
@@ -83,6 +85,7 @@ def save_recipe_info_to_database(recipes):
 
         recipe_exists = Recipe.query.filter_by(title=title, source=source).first()
 
+
         if recipe_exists is None:
             database_recipe = Recipe(title=title, source=source, image=image, url=url, calories=calories, serves=serves, total_time=total_time, cuisine_type=cuisine_type, meal_type=meal_type)
 
@@ -91,6 +94,7 @@ def save_recipe_info_to_database(recipes):
         
             recipe_id = database_recipe.id
 
+            # extract ingredient info for each recipe and save to database
             for ingredient in recipe.ingredients:
                 name = ingredient['food']
                 database_ingredient = Ingredient(name = name)
@@ -107,15 +111,16 @@ def save_recipe_info_to_database(recipes):
 
                 ingredient_info = Ingredient_Info(text=text, quantity=quantity, measure=measure, weight=weight, food_category=food_category, image=image, ingredient_id=ingredient_id)
                 db.session.add(ingredient_info)
-                db.session.commit()
+    
 
                 recipe_ingredient = Recipe_Ingredient(recipe_id=recipe_id, ingredient_id=ingredient_id)
                 db.session.add(recipe_ingredient)
-                db.session.commit()
+
+            db.session.commit()
 
                 
         
-
+            # get nutrition facts for each recipe and save to the database
             for key, nutrition_fact in recipe.nutrition_facts.items():
 
                 label = nutrition_fact['label']
@@ -124,7 +129,8 @@ def save_recipe_info_to_database(recipes):
 
                 new_nutrition_fact = Nutrition_Fact(label=label, quantity=quantity, unit=unit, recipe_id=recipe_id)
                 db.session.add(new_nutrition_fact)
-                db.session.commit()
+
+            db.session.commit()
             
             
 
@@ -132,6 +138,7 @@ def save_recipe_info_to_database(recipes):
 
 @app.before_request
 def add_user_to_global():
+    # add user to flask global for easier retrieval
 
     if 'curr_user' in session:
         g.user = User.query.get(session['curr_user'])
@@ -142,8 +149,11 @@ def add_user_to_global():
 
 @app.route('/')
 def show_home():
+    # show home page
 
     return render_template('home.html')
+
+
 
 @app.route('/register', methods=['get', 'post'])
 def register():
@@ -167,9 +177,8 @@ def register():
 
         return redirect('/')
     
-
-
     return render_template('register_form.html', form = form)
+
 
 
 @app.route('/login', methods=['get', 'post'])
@@ -198,6 +207,7 @@ def login():
     return render_template('login_form.html', form = form)
 
 
+
 @app.route('/logout')
 def logout():
     """ logout user """
@@ -212,6 +222,7 @@ def logout():
     return redirect('/')
 
 
+
 @app.route('/get_ingredients')
 def get_ingredients():
     """ return list of ingredients """
@@ -224,6 +235,7 @@ def get_ingredients():
     return jsonify({'ingredients': list(ingredients)})
 
 
+
 @app.route('/save_ingredients', methods=['post'])
 def save_ingredients():
     """ save ingredients to database """
@@ -234,11 +246,11 @@ def save_ingredients():
     return save_ingredients_to_database(ingredients)
 
 
+
 @app.route('/api/recipes')
 def get_recipes():
     """ get all relevant recipes """
 
-    print('hello')
     if not g.user:
         flash('Access unauthorized, please login/signup', 'danger')
         return redirect('/')
@@ -259,15 +271,13 @@ def get_recipes():
     }
 
     try:
+
         response = requests.get(BASE_URL, params=params, headers=headers)
         response = response.json()
-
     
         recipes = RecipeClass.extract_from_json(response)
 
-
         save_recipe_info_to_database(recipes)
-
 
         saved_recipes = []
         user_id = g.user.id
@@ -282,6 +292,7 @@ def get_recipes():
         print(f'An error occurred, {e}')
 
     return render_template('recipe_list.html', recipes=saved_recipes, favorite_recipe_ids=favorite_recipe_ids)
+
 
 
 @app.route('/api/recipes/<int:recipe_id>')
@@ -332,6 +343,7 @@ def add_favorite(recipe_id):
     return jsonify({'message': 'Added recipe to favorites'})
 
 
+
 @app.route('/api/favorites/<int:recipe_id>/delete', methods=['post'])
 def delete_favorite(recipe_id):
     """ remove favorite from the database """
@@ -347,7 +359,6 @@ def delete_favorite(recipe_id):
     db.session.commit()
 
     return jsonify({'message': 'Removed recipe from favorites'})
-
 
 
 
