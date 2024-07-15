@@ -1,56 +1,39 @@
-# Capstone Project One
+# Project Title/Description
 
-We have broken down the Capstone Project into easy-to-follow steps. Each step of the capstone contains a link with instructions for that step. Here’s a quick overview of what you’ll do for each step of your capstone project:
+The goal of this project was to create an application that allows a user to search for recipes based on ingredients they want the recipe to contain. This application allows a user to enter ingredients, which will then create a query that will fetch all relevant recipes based on the ingredients enterred. 
 
-1. Step One: Initial Project Ideas: You’ll pick up to 3 project ideas to propose to your mentor and the Springboard community. You’ll also explore some potential APIs.
-2. Step Two: Project Proposal: For this step, you’ll write a proposal for the site you want to build. This will help your mentor better understand your chosen capstone project idea.
-3. Step Three: Schema Design and API Selection: After your mentor approves of your capstone project proposal, you’ll figure out the database design of your application and which API you’ll be using.
-4. Step Four: Coding User Flows: Once you’ve figured out what you’re building, you’ll write the code to implement it. It’s important to think about what you want a user’s experience to be like as they navigate your site.
-5. Step Five: Polishing Your Application: Once you have the core functionality implemented, you’ll focus on additional UI enhancements and styling for your application.
-6. Step Six: Documenting and Submission: You’ve done a lot of work so now it’s time to show your mentor your progress! Create a README in markdown, make sure your GitHub is organized, and submit your finalized project.
 
-## Overview
+# Deployement Link
 
-For your first Capstone Project, you’ll build a database-driven website off an external
-API of your choice. Your finished capstone will be an integral part of your portfolio; it will demonstrate to potential employers everything you’ve learned from this course.
+[Project Link](https://recipe-finder-5ji5.onrender.com)
 
-We want you to work on a challenging project that will incorporate all of the back-end
-skills you’ve been developing and some of your front-end skills from the last section.
-The goal of this project isn’t to create something that’s never been done before. You
-could potentially create a website similar to one that already exists, or use a popular
-API. That being said, we do encourage you to be creative when building your site. You’re free to choose any API you’d like to use and we encourage you to tap into your
-imagination throughout the project.
 
-There is a term in software development called CRUD - Create, Read, Update, Delete. This refers to all of the basic operations that a relational database performs. Your website should have more functionality than simple CRUD.
+# Technologies Used 
 
-## Examples
+Python/Flask, PostgreSQL, SQLAlchemy, Jinja, RESTful APIs, WTForms, Bcrypt, HTML, CSS, Bootstrap, [API Link](https://developer.edamam.com/edamam-recipe-api)
 
-There are thousands of free, publically available APIs. If you love cars, you can pick
-from dozens of automotive APIs to build something that will reflect your passion. If you’re more into history, look into an API that lists the nobility of Europe. If you love sports, build a site about India’s top cricketers or your local football league.
 
-Let’s give you an example of what a site could look like. Say you choose an API like The
-Movie Database, your site could have a landing page saying “Welcome To MyMovieDB” and a separate page that displays a sortable list of all the movies in the API. This would be CRUD.
+# Database Schema
 
-You could implement various filtering methods - to filter based on an actor, a director,
-the year the movie was released, etc. When you click on the record associated with the movie, you could redirect a user to a separate page that displays all of the data
-associated with that movie.
+[Database Schema Link](https://github.com/pkotis32/Capstone1/blob/main/Database%20Schema.drawio.png)
 
-Now let’s talk about bells and whistles. If you were to implement ONE feature like
-creating sharable lists of your favorite movies, finding and playing a trailer for the movie on-page, or a simple “recommendation system” that would recommend new movies based on similarities to movies you liked, this would go beyond CRUD. A simple
-“recommendation system” would be along the lines of, if you like Big Daddy with Adam
-Sandler, recommending other Adam Sandler comedies from the 90s or recommending
-movies his co-stars like Steve Buscemi starred in. This does not mean creating a
-complicated system from scratch like Netflix.
 
-It is better to pick a project that errs on the side of simple and boring than a complex
-project with a million moving parts you can get stuck in.
+# Installation instructions
 
-[Here is an example of a previous project.](https://github.com/juliahazer/chart-my-team)
+The first step to install the project is to clone the repository from github on a local machine by typing 'git clone (git_repo_url)'. The next step would be to install python3 if it isn't already installed. This can be done a couple of ways: one method is to download it directly from python's own webpage, or it can be installed using homebrew on a mac device using the command 'brew install python'. Next, a virtual environment should be created using the command 'python -m venv venv'. Then all the dependencies should be installed from the requirements.txt file with the command 'pip install -r requirements.txt'. Once all the dependencies are installed, the next step is to get started with the free plan for the recipe search product within the api linked above. Once this is done, you will be given an application_id and an application_key, which should be inserted in a .env file exactly as they are spelled here. This should set everything up so that the application is ready, the only thing left is to start a server which can be done using the command 'flask run'. 
 
-## Guidelines
 
-1. You will use the following technologies in this project: Python/Flask, PostgreSQL, SQLAlchemy, Heroku, Jinja, RESTful APIs, JavaScript, HTML, CSS. Depending on your idea, you might end up using WTForms and other technologies discussed in the course.
-2. Every step of the project has submissions. This will alert your mentor to evaluate your work. Pay attention to the instructions so you submit the right thing. You will submit the link to your GitHub repo several times, this is for your mentor’s convenience. Your URL on GitHub is static and will not change.
-3. The first two steps require mentor approval to proceed, but after that, you are free to continue working on the project after you submit your work. For instance, you don’t need your mentor to approve your database schema before you start working on your site. Likewise, you don’t need your mentor to approve the first iteration of your site before you start polishing it.
-4. If you get stuck, there is a wealth of resources at your disposal. The course contains all of the material you will need to complete this project, but a well-phrased Google search might yield you an immediate solution to your problem. Don’t forget that your Slack community, TAs, and your mentor there to help you out.
-5. Make sure you use a free API and deploy your project on Heroku , so everyone can see your work!
+# Usage/Features
+
+This application will first ask the user to login/signup. Once the user has done so, they will have access to the recipe finder search bar where they should enter desired ingredients for their recipe to have. The user can either click on many ingredients that will be populated in the dropdown area to add to their query, or they can type an ingredient from scratch and click enter, which will add it to the list of ingredients. Once the user clicks on the search button, a list of relevant recipes should be returned. The user will be able to click on each recipe that is returned to further explore the recipe details. The user will be able to access the original recipe link, as well as information about the ingredients used and the nutrition facts associated with the recipe. Additionally, the user is allowed to favorite a recipe to add it to a favorite list, that will be saved every time the user is logged in. 
+
+
+# Contributing
+
+Other users can contribute to this project a couple different ways. I think one of the biggest issues I see is that it takes a long time for the recipes to be returned after a user searches for them. The reason for this is that when search button is clicked, all of the recipes are saved to a database as well as all of their infromation such as ingredients and nutrition facts. I have tried to make the commits more efficient by not commiting after each addition of a recipe ingredient or nutrition information and istead to commit once they have all been added to the session. Still, I believe improvements can be made, which I would love to have people contribute to. Possibly, instead of saving all the recipe information to the database for every recipe that is returned, maybe instead it would be better to save just the general recipe information initially, but then once a user clicks on a recipe to see further detail about it, to then make an another api request to retrieve the further details instead of query the information that was already save to the database. Additionally, I am not the best with visual appearance, so others can definetely contribute to enhace the visuals of the application. 
+
+
+# Contact Info
+
+Name: Phillip Kotis
+Email: kotisphillip@gmail.com
