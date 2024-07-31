@@ -14,9 +14,8 @@ app = Flask(__name__)
 BASE_URL = 'https://api.edamam.com/api/recipes/v2'
 application_id = os.getenv('application_id')
 application_key = os.getenv('application_key')
-supabase_database_uri = os.getenv('supabase_database_uri')
 
-app.config["SQLALCHEMY_DATABASE_URI"] = supabase_database_uri
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('supabase_database_uri')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "abc123"
@@ -257,7 +256,8 @@ def get_recipes():
     
     ingredients = request.args.getlist('ingredients')
     query_string = ','.join(ingredients)
-
+    application_id = os.getenv('application_id')
+    application_key = os.getenv('application_key')
 
     params = {
         'type': 'public',
@@ -274,10 +274,13 @@ def get_recipes():
 
         response = requests.get(BASE_URL, params=params, headers=headers)
         response = response.json()
-    
+
+        # saves the recipe object list that was returned to a variable
         recipes = RecipeClass.extract_from_json(response)
 
+        # saves all the recipe objects to the database
         save_recipe_info_to_database(recipes)
+
 
         saved_recipes = []
         user_id = g.user.id
@@ -301,6 +304,7 @@ def show_recipe(recipe_id):
 
     if not g.user:
         flash('Access unauthorized, please login/signup', 'danger')
+        return redirect('/')
 
     user_id = g.user.id
     recipe = Recipe.query.get(recipe_id)
@@ -316,8 +320,10 @@ def show_recipe_ingredients(recipe_id):
 
     if not g.user:
         flash('Access unauthorized, please login/signup', 'danger')
+        return redirect('/')
 
     recipe = Recipe.query.get(recipe_id)
+
 
     return render_template('recipe_ingredients.html', recipe = recipe)
 
@@ -329,6 +335,7 @@ def add_favorite(recipe_id):
     
     if not g.user:
         flash('Access unauthorized, please login/signup', 'danger')
+        return redirect('/')
     
     user_id = g.user.id
     user = User.query.get(user_id)
@@ -339,6 +346,7 @@ def add_favorite(recipe_id):
         user_favorite = User_Favorite(user_id=user_id, recipe_id=recipe_id)
         db.session.add(user_favorite)
         db.session.commit()
+        flash('Added recipe to favorites', 'success')
 
     return jsonify({'message': 'Added recipe to favorites'})
 
@@ -350,6 +358,7 @@ def delete_favorite(recipe_id):
 
     if not g.user:
         flash('Access unauthorized, please login/signup', 'danger')
+        return redirect('/')
 
     user_id = g.user.id
 
@@ -357,6 +366,7 @@ def delete_favorite(recipe_id):
 
     db.session.delete(user_favorite)
     db.session.commit()
+    flash('Removed recipe from favorites', 'success')
 
     return jsonify({'message': 'Removed recipe from favorites'})
 
@@ -368,6 +378,7 @@ def show_favorites():
 
     if not g.user:
         flash('Access unauthorized, please login/signup', 'danger')
+        return redirect('/')
 
     user = g.user
 
@@ -385,8 +396,10 @@ def show_recipe_nutrition_facts(recipe_id):
 
     if not g.user:
         flash('Access unauthorized, please login/signup', 'danger')
+        return redirect('/')
 
     recipe = Recipe.query.get(recipe_id)
+
     nutrition_facts = recipe.nutrition_facts
 
     return render_template('nutrition_facts.html', recipe=recipe, nutrition_facts=nutrition_facts)

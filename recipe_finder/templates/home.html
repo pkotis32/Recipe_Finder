@@ -8,10 +8,13 @@
 {% if session['curr_user'] %}
 <div class="container mt-5 search-container" >
     <div class="text-center"><h1>Recipe Searcher</h1></div>
-    <div class="form-group d-flex justify-content-center position-relative mt-4">
-        <input type="text" class="form-control w-50 search ms-5" placeholder="Enter ingredients...">
-        <button class="btn btn-info search_recipes ms-2">Search</button>
-        <div class="dropdown-menu form-control w-50 mt-5 me-5" id="dropdown"></div>
+    <div class="form-group position-relative mt-4 d-flex flex-column align-items-center">
+        <div class="alert alert-info p-1 text-center w-50">Either select from dropdown or type ingredient and press enter to add</div>
+        <div class="d-flex w-50">
+            <input type="text" class="form-control search " placeholder="Enter Ingredients...">
+            <button class="btn btn-info search_recipes">Search</button>
+        </div> 
+        <div class="dropdown-menu form-control w-50" id="dropdown"></div>
     </div>
 </div>
 

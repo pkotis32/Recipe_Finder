@@ -61,11 +61,11 @@ $(document).ready(function() {
 
         const isFavorite = $(this).hasClass('fas')
         const recipe_id = $(this).data('recipe-id')
-        console.log(isFavorite)
-        console.log(recipe_id)
-        console.log('hello')
-        console.log(isFavorite)
         $(this).toggleClass('fas far')
+
+        if ($(this).hasClass('favorite_list') && isFavorite) {
+            $(this).parent().remove()
+        }
 
         if (!isFavorite) {
             try{

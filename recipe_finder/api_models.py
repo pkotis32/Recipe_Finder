@@ -2,7 +2,9 @@ import pdb
 # class to save relevant recipe information from json response
 class RecipeClass:
 
+    
     def __init__(self, title=None, source=None, image=None, url=None, ingredients=None, nutrition_facts=None, calories=None, serves=None, total_time=None, cuisine_type=None, meal_type=None):
+        """constructor that contains all relevant recipe information returned from api response"""
         self.title = title
         self.source = source
         self.image = image

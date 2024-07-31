@@ -14,6 +14,7 @@ def connect_db(app):
 
 
 class User(db.Model):
+    """user model which holds user informatino"""
 
     __tablename__ = 'users'
 
@@ -56,6 +57,7 @@ class User(db.Model):
         
 
 class Recipe(db.Model):
+    """recipe model which holds recipe information"""
 
     __tablename__ = 'recipes'
 
@@ -78,6 +80,8 @@ class Recipe(db.Model):
     
 
 class Nutrition_Fact(db.Model):
+    """nutrition_facts model which holds nutrition fact data"""
+
     __tablename__ = 'nutrition_facts'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -92,6 +96,7 @@ class Nutrition_Fact(db.Model):
 
 
 class Ingredient(db.Model):
+    """ingredient model which holds ingredient name information"""
 
     __tablename__ = 'ingredients'
 
@@ -107,6 +112,7 @@ class Ingredient(db.Model):
 
 
 class Ingredient_Info(db.Model):
+    """ingredient_info model which holds more ingredient information"""
 
     __tablename__ = 'ingredient_info'
 
@@ -127,6 +133,7 @@ class Ingredient_Info(db.Model):
 
 
 class Recipe_Ingredient(db.Model):
+    """links together the recipe and ingredient models"""
     
     __tablename__ = 'recipe_ingredient'
 
@@ -146,6 +153,7 @@ class Recipe_Ingredient(db.Model):
     
 
 class User_Favorite(db.Model):
+    """links together the user with the recipe model to create a user favorite"""
 
     __tablename__ = 'user_favorite'
 

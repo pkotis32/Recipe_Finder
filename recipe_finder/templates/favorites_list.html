@@ -11,7 +11,7 @@
             {% set is_favorite = favorite.id in favorite_recipe_ids%}
             {% if is_favorite %}
             <li class="list-group-item"><a href="/api/recipes/{{favorite.id}}">{{favorite.title}}</a>
-                <i class="fas fa-star favorite" data-recipe-id="{{favorite.id}}"></i></li>
+                <i class="fas fa-star favorite favorite_list" data-recipe-id="{{favorite.id}}"></i></li>
             {% endif %}
         </li>
         {% endfor %}
